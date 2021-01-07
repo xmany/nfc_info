@@ -34,7 +34,7 @@ public class NfcInfoPlugin implements FlutterPlugin, MethodCallHandler, NewInten
 
   private String initialText = null;
 
-  /// not necessary for background nfc starts app scenario?
+  /// TODO not necessary for background nfc starts app scenario?
   private ActivityPluginBinding binding = null;
 
   @Override
@@ -67,7 +67,6 @@ public class NfcInfoPlugin implements FlutterPlugin, MethodCallHandler, NewInten
     channel.setMethodCallHandler(null);
   }
 
-
   @Override
   public boolean onNewIntent(Intent intent) {
     Log.d(TAG, "onNewIntent: incoming intent");
@@ -93,6 +92,7 @@ public class NfcInfoPlugin implements FlutterPlugin, MethodCallHandler, NewInten
       }
     }
   }
+  
   @Override
   public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
     this.binding = binding;
