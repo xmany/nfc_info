@@ -1,15 +1,5 @@
 # nfc_info
 
-A new flutter plugin project.
+This package is to enable flutter app to obtain background NFC payload, after the app is put into foreground by a NFC tag action.
 
-## Getting Started
-
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+Please note that this is the very first version of the package, there are places that I am not sure of, especially on iOS.

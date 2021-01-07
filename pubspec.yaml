@@ -1,8 +1,7 @@
 name: nfc_info
-description: A new flutter plugin project.
+description: Help flutter app to grab background NFC message after the app is opened by NFC tag
 version: 0.0.1
-author:
-homepage:
+homepage: https://www.icoffee.app
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

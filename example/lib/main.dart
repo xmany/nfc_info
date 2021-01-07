@@ -13,13 +13,41 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String _platformVersion = 'Unknown';
+  String _nfc = "";
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     initPlatformState();
+    getNfcInfo();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("app in resumed");
+        getNfcInfo();
+        break;
+      case AppLifecycleState.inactive:
+        print("app in inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("app in paused");
+        break;
+      case AppLifecycleState.detached:
+        print("app in detached");
+        break;
+    }
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -42,6 +70,25 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> getNfcInfo() async {
+    String nfc = "";
+    try {
+      nfc = await NfcInfo.getInitialText();
+    } on PlatformException {
+      print("error invoking getInitialText");
+    }
+    print('getNfcInfo: $nfc');
+    if (nfc != null && nfc.isNotEmpty) {
+      // if we got nfc, need to clear
+      await NfcInfo.reset();
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _nfc = nfc;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -49,8 +96,18 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Column(
+          children: [
+            Text('Running on: $_platformVersion\n'),
+            Text('Got nfc: $_nfc'),
+            Spacer(),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.nfc),
+          onPressed: () {
+            getNfcInfo();
+          },
         ),
       ),
     );
