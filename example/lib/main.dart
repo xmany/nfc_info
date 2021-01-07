@@ -35,17 +35,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        print("app in resumed");
+        //print("app in resumed");
         getNfcInfo();
         break;
-      case AppLifecycleState.inactive:
-        print("app in inactive");
-        break;
-      case AppLifecycleState.paused:
-        print("app in paused");
-        break;
-      case AppLifecycleState.detached:
-        print("app in detached");
+      default:
         break;
     }
   }
@@ -79,7 +72,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     print('getNfcInfo: $nfc');
     if (nfc != null && nfc.isNotEmpty) {
-      // if we got nfc, need to clear
+      /// if we got nfc, need to clear
+      /// so that next time the app goes from background to foreground
+      /// the app will not process the same old NFC payload all over again.
       await NfcInfo.reset();
     }
     if (!mounted) return;
@@ -94,20 +89,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('NFC INFO'),
         ),
         body: Column(
           children: [
             Text('Running on: $_platformVersion\n'),
             Text('Got nfc: $_nfc'),
-            Spacer(),
           ],
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.nfc),
-          onPressed: () {
-            getNfcInfo();
-          },
+          onPressed: getNfcInfo,
         ),
       ),
     );
