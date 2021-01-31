@@ -1,6 +1,6 @@
 name: nfc_info
 description: Help flutter app to grab background NFC message after the app is opened by NFC tag
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/xmany/nfc_info
 
 environment:

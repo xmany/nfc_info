@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 class NfcInfo {
   static const MethodChannel _channel = const MethodChannel('nfc_info');
+  static const EventChannel _eChannel = EventChannel('nfc_info_events');
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -23,4 +24,8 @@ class NfcInfo {
   static Future<void> reset() async {
     await _channel.invokeMethod('reset');
   }
+
+  static Stream<String> _stream;
+  static Stream<String> getTextsStream() =>
+      _stream ??= _eChannel.receiveBroadcastStream().cast<String>();
 }
