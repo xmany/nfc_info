@@ -15,19 +15,23 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String _platformVersion = 'Unknown';
-  String _nfc = "";
+  String _initialNfc = "";
+  String _latestNfc = "";
+  StreamSubscription _sub;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     initPlatformState();
-    getNfcInfo();
+    getInitialNfcInfo();
+    listenToNfcStream();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    if (_sub != null) _sub.cancel();
     super.dispose();
   }
 
@@ -35,8 +39,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        //print("app in resumed");
-        getNfcInfo();
+        print("app resumed");
+        // getNfcInfo();
         break;
       default:
         break;
@@ -63,24 +67,37 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     });
   }
 
-  Future<void> getNfcInfo() async {
+  Future<void> getInitialNfcInfo() async {
     String nfc = "";
     try {
       nfc = await NfcInfo.getInitialText();
     } on PlatformException {
-      print("error invoking getInitialText");
+      print("getInitialNfcInfo: error getInitialText()");
     }
-    print('getNfcInfo: $nfc');
+    print('getInitialNfcInfo: $nfc');
+    if (!mounted) return;
+    setState(() {
+      _initialNfc = nfc;
+    });
+    // ��icoffee://www.icoffee.app/shops/123
     if (nfc != null && nfc.isNotEmpty) {
-      /// if we got nfc, need to clear
+      /// TODO if we got nfc, need to clear
       /// so that next time the app goes from background to foreground
       /// the app will not process the same old NFC payload all over again.
-      await NfcInfo.reset();
+      // await NfcInfo.reset();
     }
-    if (!mounted) return;
+  }
 
-    setState(() {
-      _nfc = nfc;
+  void listenToNfcStream() {
+    _sub = NfcInfo.getTextsStream().listen((String nfc) {
+      if (!mounted) return;
+      print("nfc from stream: $nfc");
+      setState(() {
+        _latestNfc = nfc;
+      });
+    }, onError: (Object err) {
+      if (!mounted) return;
+      print(err.toString());
     });
   }
 
@@ -94,12 +111,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         body: Column(
           children: [
             Text('Running on: $_platformVersion\n'),
-            Text('Got nfc: $_nfc'),
+            Text('Got nfc: $_initialNfc'),
+            Text('nfc stream: $_latestNfc'),
           ],
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.nfc),
-          onPressed: getNfcInfo,
+          onPressed: getInitialNfcInfo,
         ),
       ),
     );
