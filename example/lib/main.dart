@@ -15,14 +15,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String _platformVersion = 'Unknown';
-  String _initialNfc = "";
+  String? _initialNfc = "";
   String _latestNfc = "";
-  StreamSubscription _sub;
+  StreamSubscription? _sub;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     initPlatformState();
     getInitialNfcInfo();
     listenToNfcStream();
@@ -30,8 +30,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    if (_sub != null) _sub.cancel();
+    WidgetsBinding.instance!.removeObserver(this);
+    _sub?.cancel();
     super.dispose();
   }
 
@@ -68,9 +68,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> getInitialNfcInfo() async {
-    String nfc = "";
+    String? nfc = "";
     try {
-      nfc = await NfcInfo.getInitialText();
+      nfc = await (NfcInfo.getInitialText() as FutureOr<String>);
     } on PlatformException {
       print("getInitialNfcInfo: error getInitialText()");
     }

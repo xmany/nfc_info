@@ -14,8 +14,8 @@ class NfcInfo {
   ///
   ///   * the initially stored text (possibly null), on successful invocation;
   ///   * a [PlatformException], if the invocation failed in the platform plugin.
-  static Future<String> getInitialText() async {
-    final String text = await _channel.invokeMethod('getInitialText');
+  static Future<String?> getInitialText() async {
+    final String? text = await _channel.invokeMethod('getInitialText');
     return text;
   }
 
@@ -25,7 +25,7 @@ class NfcInfo {
     await _channel.invokeMethod('reset');
   }
 
-  static Stream<String> _stream;
+  static Stream<String>? _stream;
   static Stream<String> getTextsStream() =>
       _stream ??= _eChannel.receiveBroadcastStream().cast<String>();
 }

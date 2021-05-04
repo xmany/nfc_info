@@ -54,7 +54,7 @@ public class SwiftNfcInfoPlugin: NSObject, FlutterPlugin, FlutterStreamHandler{
       let url = option as! URL
       setInitialText(text: url.absoluteString)
     } else {
-      setInitialText(text: "application launch without URL in launch option")
+      setInitialText(text: nil)
     }
     return true
     

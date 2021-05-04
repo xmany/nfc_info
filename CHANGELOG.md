@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Fix bug: initial empty nfc info
+
 ## 0.0.3
 
 - Streaming on iOS, could stream the NFC tag.
