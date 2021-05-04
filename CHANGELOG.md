@@ -1,3 +1,7 @@
+## 0.0.5
+
+- Support sound null safety
+
 ## 0.0.4
 
 - Fix bug: initial empty nfc info
